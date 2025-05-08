@@ -23,7 +23,7 @@ jobs:
 
       # Publish the Blazor WASM Client project
       - name: Publish
-        run: dotnet publish MyBlazorApp.Client/MyBlazorApp.Client.csproj -c Release -o release/wwwroot --nologo
+        run: dotnet publish MyBlazorApp.Server.csproj -c Release -o release/wwwroot --nologo
 
       # Update base tag in index.html for GitHub Pages
       - name: Rewrite base href
