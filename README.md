@@ -57,7 +57,7 @@ BlackPianoAssessment/
 
 4. **Access the application:**
 
-   Navigate to `https://localhost:5001` in your browser.
+   Navigate to `https://localhost:7096` in your browser.
 
 ## 📦 Deployment
 
