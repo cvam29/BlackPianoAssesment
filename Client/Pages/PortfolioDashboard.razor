@@ -1,0 +1,78 @@
+﻿@page "/portfolio"
+@using MyBlazorApp.Shared.Models
+@inject HttpClient Http
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<div class="container mx-auto p-6 max-w-4xl">
+    <h3 class="text-2xl font-bold text-gray-800 mb-6">Portfolio Overview</h3>
+
+    @if (_isLoading)
+    {
+        <div class="flex justify-center items-center py-10">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+        </div>
+    }
+    else if (_errorMessage != null)
+    {
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+            <p class="font-semibold">Error</p>
+            <p>@_errorMessage</p>
+        </div>
+    }
+    else if (_data?.ByAccountType?.Any() != true)
+    {
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+            <p class="font-semibold">No Data</p>
+            <p>No portfolio data available at this time.</p>
+        </div>
+    }
+    else
+    {
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h4 class="text-xl font-semibold text-gray-700 mb-4">
+                Total Value: @(_data?.TotalValue.ToString("C") ?? "N/A")
+            </h4>
+            <h5 class="text-lg font-medium text-gray-600 mb-3">Account Types:</h5>
+            <ul class="space-y-2">
+                @foreach (var account in _data?.ByAccountType ?? Enumerable.Empty<ByAccountType>())
+                {
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition">
+                        <span class="text-gray-800 font-medium">@(account?.AccountType ?? "Unknown")</span>
+                        <span class="text-gray-600">@(account?.TotalValue.ToString("C") ?? "N/A")</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@code {
+    private AggregationData? _data;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _isLoading = true;
+            _errorMessage = null;
+            _data = await Http.GetFromJsonAsync<AggregationData>("/api/portfolio/aggregate");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = "Failed to load portfolio data. Please try again later.";
+            _data = new AggregationData { TotalValue = 0, ByAccountType = [] };
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+ 
+    
+  
+}
