@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using MyBlazorApp.Server.Midlleware;
 using MyBlazorApp.Server.Services.Implementations;
 using MyBlazorApp.Server.Services.Interfaces;
